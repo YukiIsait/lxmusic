@@ -8,7 +8,7 @@ jobs:
     name: build
     runs-on: windows-latest
     steps:
-      - name: Check out git repository form lyswhut/lx-music-desktop
+      - name: Check out git repository from lyswhut/lx-music-desktop
         uses: actions/checkout@v3
         with:
           repository: lyswhut/lx-music-desktop
