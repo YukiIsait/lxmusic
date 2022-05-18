@@ -1,0 +1,66 @@
+name: Build desktop
+
+on:
+  - workflow_dispatch
+
+jobs:
+  build:
+    name: build
+    runs-on: windows-latest
+    steps:
+      - name: Check out git repository form lyswhut/lx-music-desktop
+        uses: actions/checkout@v3
+        with:
+          repository: lyswhut/lx-music-desktop
+          path: lx-music-desktop
+
+      - name: Check out git repository
+        uses: actions/checkout@v3
+        with:
+          path: replaced
+
+      - name: Replace
+        run: powershell -Command mv replaced/* lx-music-desktop
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: lts/*
+
+      - name: Print Node.js version
+        run: node --version
+
+      - name: Cache file
+        uses: actions/cache@v2
+        working-directory: lx-music-desktop
+        with:
+          path: |
+            node_modules
+            %APPDATA%\npm-cache
+            %LOCALAPPDATA%\electron\Cache
+            %LOCALAPPDATA%\electron-builder\Cache
+          key: ${{ runner.os }}-build-caches-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-
+
+      - name: Install dependencies
+        working-directory: lx-music-desktop
+        run: |
+          npm install npm@8.5 -g
+          npm install
+      
+      - name: Build
+        working-directory: lx-music-desktop
+        run: npm run build:src
+      
+      - name: Pack
+        working-directory: lx-music-desktop
+        run: npm run pack:win:7z:x64
+
+      - name: Upload
+        uses: actions/upload-artifact@v3
+        working-directory: lx-music-desktop
+        with:
+          name: lx-music-desktop.win64.7z
+          path: build/*.7z
+          if-no-files-found: error
