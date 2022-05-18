@@ -31,15 +31,14 @@ jobs:
         run: node --version
 
       - name: Cache file
-        uses: actions/cache@v2
-        working-directory: lx-music-desktop
+        uses: actions/cache@v3
         with:
           path: |
-            node_modules
+            lx-music-desktop\node_modules
             %APPDATA%\npm-cache
             %LOCALAPPDATA%\electron\Cache
             %LOCALAPPDATA%\electron-builder\Cache
-          key: ${{ runner.os }}-build-caches-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-build-caches-${{ hashFiles('lx-music-desktop/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-build-
 
@@ -59,8 +58,7 @@ jobs:
 
       - name: Upload
         uses: actions/upload-artifact@v3
-        working-directory: lx-music-desktop
         with:
           name: lx-music-desktop.win64.7z
-          path: build/*.7z
+          path: lx-music-desktop/build/*.7z
           if-no-files-found: error
