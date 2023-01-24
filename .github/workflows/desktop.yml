@@ -20,7 +20,7 @@ jobs:
           path: replaced
 
       - name: Replace
-        run: powershell -Command Copy-Item -Force -Recurse replaced/* lx-music-desktop
+        run: Copy-Item -Force -Recurse -Path replaced/* -Destination lx-music-desktop
 
       - name: Install Node.js
         uses: actions/setup-node@v3
